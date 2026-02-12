@@ -2,6 +2,7 @@
 
 An interactive educational game to master the fundamentals of Data Analysis and Business Intelligence.
 
+👉 [Play the Game Here](https://hiagoskuba.github.io/data-game/)
 ---
 
 ## About
