@@ -1,4 +1,4 @@
-# hiagoskuba | bi-guardian-quiz
+# hiagoskuba | data-game
 
 An interactive educational game to master the fundamentals of Data Analysis and Business Intelligence.
 
