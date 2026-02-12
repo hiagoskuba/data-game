@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>BI Guardian Quiz</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.31.0/build/stlite.css" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script src="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.31.0/build/stlite.js"></script>
+    <script>
+      stlite.mount({
+        requirements: [], // Adicione bibliotecas extras aqui se usar (ex: pandas)
+        entrypoint: "app.py",
+        files: {
+          "app.py": `
+import streamlit as st
+
+# Configuração da página
+st.set_page_config(page_title="BI Guardian Quiz", page_icon="📊")
+
+# Banco de perguntas baseado nas suas anotações KEEP
+questions = [
+    {
+        "question": "Se você seleciona um subconjunto onde cada elemento tem a mesma chance de ser escolhido, você usa:",
+        "options": ["Amostra não-probabilística", "Amostra probabilística aleatória", "Amostra por conveniência"],
+        "answer": "Amostra probabilística aleatória",
+        "explanation": "Na amostragem aleatória, todos têm igual chance, garantindo maior confiabilidade conforme suas notas."
+    },
+    {
+        "question": "Qual tipo de variável é a 'Escolaridade' (Graduação, Pós, Doutorado), onde existe uma hierarquia?",
+        "options": ["Quantitativa Discreta", "Qualitativa Nominal", "Qualitativa Ordinal"],
+        "answer": "Qualitativa Ordinal",
+        "explanation": "Variáveis ordinais seguem uma ordem ou estágio (ex: níveis de escolaridade ou estágio de uma doença)."
+    },
+    {
+        "question": "Se as decisões dos funcionários mudam conforme a vontade do chefe, o comportamento do funcionário é uma:",
+        "options": ["Variável Independente", "Variável Dependente", "Variável Quantitativa Contínua"],
+        "answer": "Variável Dependente",
+        "explanation": "A variável dependente é aquela influenciada por outra (neste caso, a decisão do chefe é a independente)."
+    },
+    {
+        "question": "Entrevistar apenas pessoas que passam em uma praça por ser mais fácil é qual método?",
+        "options": ["Amostragem por Conglomerado", "Amostra por Conveniência", "Censo"],
+        "answer": "Amostra por Conveniência",
+        "explanation": "A amostra por conveniência foca na facilidade de acesso, mas pode não representar a população fielmente."
+    }
+]
+
+# Inicialização do estado
+if 'score' not in st.session_state:
+    st.session_state.score = 0
+    st.session_state.current_q = 0
+    st.session_state.game_over = False
+
+st.title("🎯 BI Guardian: Data Challenge")
+st.write(f"Pontos de Confiança: **{st.session_state.score}**")
+
+if not st.session_state.game_over:
+    q = questions[st.session_state.current_q]
+    
+    # Barra de progresso estilo Duolingo
+    progress = (st.session_state.current_q) / len(questions)
+    st.progress(progress)
+    
+    st.subheader(f"Desafio {st.session_state.current_q + 1}:")
+    st.info(q["question"])
+    
+    for option in q["options"]:
+        if st.button(option, key=f"{st.session_state.current_q}_{option}"):
+            if option == q["answer"]:
+                st.success("Correto! 🎉")
+                st.session_state.score += 25
+            else:
+                st.error(f"Incorreto. A resposta era: {q['answer']}")
+            
+            st.write(f"💡 *Por que?* {q['explanation']}")
+            
+            if st.session_state.current_q < len(questions) - 1:
+                st.session_state.current_q += 1
+                st.button("Próxima fase ➡️")
+            else:
+                st.session_state.game_over = True
+                st.button("Ver meu veredito")
+else:
+    st.balloons()
+    st.header("Análise Concluída!")
+    st.write(f"Sua pontuação final foi: **{st.session_state.score} de 100**")
+    if st.session_state.score >= 75:
+        st.success("Selo de Analista Confiável Concedido! 🏆")
+    else:
+        st.warning("Cuidado com os vieses! Revise suas notas de amostragem.")
+        
+    if st.button("Reiniciar Treinamento"):
+        st.session_state.score = 0
+        st.session_state.current_q = 0
+        st.session_state.game_over = False
+        st.rerun()
+`
+        },
+      }, document.getElementById("root"));
+    </script>
+  </body>
+</html>
